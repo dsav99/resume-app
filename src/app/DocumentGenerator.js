@@ -1,11 +1,12 @@
-'use client'
+'use client';
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { IoBrowsers, IoDocumentTextOutline } from 'react-icons/io5';
+import { IoBrowsers } from 'react-icons/io5';
 
 const DocumentGenerator = () => {
   const [text, setText] = useState('');
   const [file, setFile] = useState(null);
+  const [generatedText, setGeneratedText] = useState('');
 
   const onDrop = useCallback(acceptedFiles => {
     setFile(acceptedFiles[0]);
@@ -13,10 +14,27 @@ const DocumentGenerator = () => {
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting:', text, file);
-    // API call would be handled here
+    if (text.trim()) {
+      try {
+        const response = await fetch('/generate-text', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: text })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setGeneratedText(data.result);
+        } else {
+          throw new Error(data.error || 'Failed to generate text');
+        }
+      } catch (error) {
+        console.error("Error calling backend:", error.message);
+      }
+    }
   };
 
   return (
@@ -32,8 +50,6 @@ const DocumentGenerator = () => {
               className="w-full p-4 border border-gray-300 rounded-lg text-lg"
               rows="5"
             ></textarea>
-            {/* <IoDocumentTextOutline size="3em" className="my-2" /> */}
-            {/* <p className="text-sm text-gray-500">Paste your text</p> */}
           </div>
           <div {...getRootProps({ className: 'dropzone' })} className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400">
             <input {...getInputProps()} />
@@ -48,6 +64,11 @@ const DocumentGenerator = () => {
             Generate
           </button>
         </form>
+        {generatedText && (
+          <div className="mt-4 p-3 bg-gray-200 rounded">
+            <p className="text-gray-900">{generatedText}</p>
+          </div>
+        )}
       </div>
     </div>
   );
