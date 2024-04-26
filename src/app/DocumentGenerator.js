@@ -24,6 +24,8 @@ const DocumentGenerator = () => {
     console.log(completion.choices[0]);
   };
 
+  // Adding AWS deployment
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-lg">
