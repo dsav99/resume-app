@@ -43,7 +43,7 @@ const DocumentGenerator = () => {
           <div {...getRootProps({ className: 'dropzone' })} className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400">
             <input {...getInputProps()} />
             <IoBrowsers size="3em" className="my-2" />
-            <p className="text-sm text-gray-500">Drag 'n' drop file here, or click to upload</p>
+            <p className="text-sm text-gray-500">Drag n drop file here, or click to upload</p>
             {file && <p className="mt-2 text-blue-500">File: {file.name}</p>}
           </div>
           <button
